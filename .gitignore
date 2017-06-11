@@ -2,6 +2,7 @@
 .setings/*
 .settings
 .classpath
+node_modules/
 bin/*
 
 /bin/
