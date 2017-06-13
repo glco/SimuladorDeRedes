@@ -18,6 +18,7 @@ import datagrama.DatagramaIpv4Factory;
 import interfaceSimulada.InterfaceDeEntrada;
 import interfaceSimulada.InterfaceDeSaida;
 import interfaceSimulada.InterfaceSimulada;
+import Util;
 
 public class RoteadorIPV4 extends Roteador {
 
@@ -38,12 +39,14 @@ public class RoteadorIPV4 extends Roteador {
 	public void enviaMensagem(String msg, String ip) throws IOException {
 		// Envia mensagem msg usando a interface com ip virutal == ip
 		if(this.getInterfaces().containsKey(ip)){
-			Datagrama  d = this.getDatagramaFactory().criaDatagrama(msg,"0000.0000.0000.0000", ip);
-			this.getInterfaces().get(ip).enviaMensagem(d.toBinaryString());
-			//System.out.println(d.toBinaryString());
-			System.out.println(d.toString());
+			String ar[] = splitByNumber(msg, 65535);
+			for(int i = 0; i < ar.length; i++){
+				Datagrama  d = this.getDatagramaFactory().criaDatagrama(ar[i],"0000.0000.0000.0000", ip);
+				this.getInterfaces().get(ip).enviaMensagem(d.toBinaryString());
+				//System.out.println(d.toBinaryString());
+				System.out.println(d.toString());
+			}
 		}
-		
 	}
 	
 	@Override
