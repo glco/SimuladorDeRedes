@@ -1,8 +1,8 @@
 /**
  * Created by desenvolvedor on 14/06/17.
  */
+package parser;
 public class StringParser {
-
     public static String[] splitByNumber(String text, int number) {
         int inLength = text.length();
         int arLength = inLength / number;
