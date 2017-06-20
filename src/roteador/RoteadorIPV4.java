@@ -21,7 +21,7 @@ import interfaceSimulada.InterfaceSimulada;
 
 public class RoteadorIPV4 extends Roteador {
 
-	public RoteadorIPV4(int porta, String hostFile, String virtualIpFile,Controlador c) throws IOException {
+	public RoteadorIPV4(int porta, String hostFile, String virtualIpFile, String routingTableFile, Controlador c) throws IOException {
 		super(porta,c);
 		this.setInterfaces(new HashMap<String,InterfaceSimulada>());
 		inicializaInterfaces(hostFile, virtualIpFile);
