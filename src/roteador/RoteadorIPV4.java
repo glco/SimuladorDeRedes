@@ -15,16 +15,17 @@ import controlador.Controlador;
 import datagrama.Datagrama;
 import datagrama.DatagramaIpv4;
 import datagrama.DatagramaIpv4Factory;
+import fileManager.FileReader;
 import interfaceSimulada.InterfaceDeEntrada;
 import interfaceSimulada.InterfaceDeSaida;
 import interfaceSimulada.InterfaceSimulada;
 
 public class RoteadorIPV4 extends Roteador {
 
-	public RoteadorIPV4(int porta, String hostFile, String virtualIpFile,Controlador c) throws IOException {
+	public RoteadorIPV4(int porta, String hostFile, String virtualIpFile, String routingTableFile, Controlador c) throws IOException {
 		super(porta,c);
 		this.setInterfaces(new HashMap<String,InterfaceSimulada>());
-		inicializaInterfaces(hostFile, virtualIpFile);
+		inicializaInterfaces(hostFile, virtualIpFile, routingTableFile);
 		this.setDatagramaFactory(new DatagramaIpv4Factory());
 	}
 
@@ -67,28 +68,14 @@ public class RoteadorIPV4 extends Roteador {
 	}
 
 	@Override
-	public void inicializaInterfaces(String host, String virtualIp) throws IOException {
-		BufferedReader hostsFile = new BufferedReader(new InputStreamReader(new FileInputStream(host)));
-		String s = null;
-		LinkedList<String[]> interfacesEndTemp = new LinkedList<>();
-		LinkedList<String[]> interfacesVirtualEndTemp = new LinkedList<>();;
-		String [] aux = null;
-		
-		while((s = hostsFile.readLine()) != null){
-			aux = s.split(" ");
-			interfacesEndTemp.push(aux);
-		}
-		hostsFile.close();
-		BufferedReader virtualIpFile = new BufferedReader(new InputStreamReader(new FileInputStream(virtualIp)));
-		s = null;
-		aux = null;
-		
-		while((s = virtualIpFile.readLine()) != null){
-			aux = s.split(" ");
-			interfacesVirtualEndTemp.push(aux);
-		}
-		virtualIpFile.close();
-		
+	public void inicializaInterfaces(String host, String virtualIp, String routingTableFile) throws IOException {
+		// testar se está funcionando
+		LinkedList<String[]> interfacesEndTemp = new FileReader().readNetworkFile(host);
+		LinkedList<String[]> interfacesVirtualEndTemp = new FileReader().readNetworkFile(host);
+
+		// ainda não implementado para tabela de roteamento!
+		// LinkedList<String[]> routingTableTemp = new FileReader().readNetworkFile(routingTableFile);
+
 		if(interfacesEndTemp.size() != interfacesVirtualEndTemp.size()){
 			throw new Error("Numero de entradas nos dois arquivos de inicialização são diferentes!");
 		}

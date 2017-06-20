@@ -8,6 +8,15 @@ import servidor.Servidor;
 
 public class Main {
 
+	/**
+	 * nextNodesAddressesFile contains the address of the nodes
+	 * connected to the source.
+	 *
+	 * interfacesForNextNodesFile contains the interface to access
+	 * neighbor routers from source.
+	 *
+	 * @param args
+	 */
 	public static void main(String [] args){
 		//TODO tratar porta, nome de arquivo
 		if(args.length < 2){
@@ -17,7 +26,12 @@ public class Main {
 		Controlador c = null;
 		try {
 			//s = new Servidor(Integer.parseInt(args[0]), args[1] , args[2]);
-			c = new ControladorIPV4(new RoteadorIPV4(Integer.parseInt(args[0]), args[1] , args[2], c));
+			int port = Integer.parseInt(args[0]);
+			String nextNodesAddressesFile = args[1];
+			String interfacesForNextNodesFile = args[2];
+			String routingTableFile = args[3];
+			c = new ControladorIPV4(
+					new RoteadorIPV4(port, nextNodesAddressesFile, interfacesForNextNodesFile, routingTableFile, c));
 		} catch (NumberFormatException  | IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

@@ -23,7 +23,7 @@ public abstract class Roteador {
 		this.controlador = c;
 	}
 	
-	public abstract void inicializaInterfaces(String host,String virtualIp) throws FileNotFoundException, IOException;
+	public abstract void inicializaInterfaces(String host,String virtualIp, String routerTable) throws FileNotFoundException, IOException;
 		
 		
 	
