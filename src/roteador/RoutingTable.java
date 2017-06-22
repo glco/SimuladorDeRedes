@@ -6,7 +6,7 @@ import java.util.LinkedList;
  * Created by desenvolvedor on 22/06/17.
  */
 public class RoutingTable {
-    private LinkedList<RoutingTableEntry> entradas;
+    private LinkedList<RoutingTableEntry> entradas = new LinkedList<RoutingTableEntry>();
 
     public RoutingTable(LinkedList<String[]> rows){
         rows.remove(0);
