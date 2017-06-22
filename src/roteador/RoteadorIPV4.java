@@ -23,9 +23,9 @@ import interfaceSimulada.InterfaceSimulada;
 public class RoteadorIPV4 extends Roteador {
 
 	public RoteadorIPV4(int porta, String hostFile, String virtualIpFile, String routingTableFile, Controlador c) throws IOException {
-		super(porta,c);
+		super(porta, routingTableFile, c);
 		this.setInterfaces(new HashMap<String,InterfaceSimulada>());
-		inicializaInterfaces(hostFile, virtualIpFile, routingTableFile);
+		inicializaInterfaces(hostFile, virtualIpFile);
 		this.setDatagramaFactory(new DatagramaIpv4Factory());
 	}
 
@@ -68,13 +68,10 @@ public class RoteadorIPV4 extends Roteador {
 	}
 
 	@Override
-	public void inicializaInterfaces(String host, String virtualIp, String routingTableFile) throws IOException {
+	public void inicializaInterfaces(String host, String virtualIp) throws IOException {
 		// testar se está funcionando
 		LinkedList<String[]> interfacesEndTemp = new FileReader().readNetworkFile(host);
 		LinkedList<String[]> interfacesVirtualEndTemp = new FileReader().readNetworkFile(host);
-
-		// ainda não implementado para tabela de roteamento!
-		// LinkedList<String[]> routingTableTemp = new FileReader().readNetworkFile(routingTableFile);
 
 		if(interfacesEndTemp.size() != interfacesVirtualEndTemp.size()){
 			throw new Error("Numero de entradas nos dois arquivos de inicialização são diferentes!");

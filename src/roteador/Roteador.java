@@ -9,6 +9,7 @@ import java.util.Map;
 import controlador.Controlador;
 import datagrama.Datagrama;
 import datagrama.DatagramaFactory;
+import fileManager.FileReader;
 import interfaceSimulada.InterfaceSimulada;
 import servidor.Servidor;
 
@@ -17,16 +18,16 @@ public abstract class Roteador {
 	private Servidor servidor = null;
 	private Controlador controlador = null;
 	private DatagramaFactory datagramaFactory = null;
-	
-	public Roteador(int porta,Controlador c) throws IOException{
+	private RoutingTable tabelaRoteamento = null;
+
+	public Roteador(int porta, String routingTableFile, Controlador c) throws IOException{
+		this.tabelaRoteamento = new RoutingTable(new FileReader().readNetworkFile(routingTableFile));
 		this.servidor = new Servidor(porta,this);
 		this.controlador = c;
 	}
 	
-	public abstract void inicializaInterfaces(String host,String virtualIp, String routerTable) throws FileNotFoundException, IOException;
+	public abstract void inicializaInterfaces(String host,String virtualIp) throws FileNotFoundException, IOException;
 		
-		
-	
 	public Map<String, InterfaceSimulada> getInterfaces() {
 		return interfaces;
 	}
