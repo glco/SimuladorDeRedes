@@ -36,7 +36,7 @@ public class RoutingTableEntry {
     }
 
     public static int toBin(String addr){
-        String[] splittedAddr = addr.split(".");
+        String[] splittedAddr = addr.split("\\.");
         if (splittedAddr.length == 4) {
             int a = Integer.parseInt(splittedAddr[0]);
             int b = Integer.parseInt(splittedAddr[1]);
