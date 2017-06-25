@@ -38,6 +38,7 @@ public class RoutingTable {
                 return e.getInterfaceIndex();
             }
         }
+        return -1;
     }
 
 }

@@ -34,7 +34,11 @@ public abstract class Roteador {
 
     public InterfaceSimulada getInterfaceFor(String ip){
         int i = this.tabelaRoteamento.getInterfaceIndex(ip);
-        return this.getInterfaces().get(i);
+        if (i > -1) {
+            return this.getInterfaces().get(i);
+        } else {
+            return null;
+        }
     }
 
 	public void setInterfaces(LinkedList<InterfaceSimulada> interfaces) {

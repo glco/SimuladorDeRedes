@@ -36,14 +36,23 @@ public class RoteadorIPV4 extends Roteador {
 	@Override
 	public void enviaMensagem(String msg, String ip) throws IOException {
 		// Envia mensagem msg usando a interface com ip virutal == ip
-        this.getInterfaceFor(ip).enviaMensagem(msg, ip);
-		//System.out.println(d.toString());
+        InterfaceSimulada i = this.getInterfaceFor(ip);
+        if (i != null) {
+            i.enviaMensagem(msg, ip);
+        } else {
+            System.out.println("Rede inalcansavel para o IP " + ip + ".");
+        }
 	}
 
     @Override
     public void enviaPacote(Datagrama data) throws UnsupportedEncodingException {
         DatagramaIpv4 datagrama = (DatagramaIpv4) data;
-        this.getInterfaceFor(datagrama.getDestIP()).enviaPacote(data);
+        InterfaceSimulada i = this.getInterfaceFor(datagrama.getDestIP());
+        if (i != null) {
+            i.enviaPacote(datagrama);
+        } else {
+            System.out.println("Rede inalcansavel para o IP " + datagrama.getDestIP() + ".");
+        }
     }
 
 	@Override
