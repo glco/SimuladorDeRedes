@@ -38,7 +38,7 @@ public class InterfaceDeSaida extends InterfaceSimulada {
         this.enviaPacote(datagrama);
 	}
 
-    public void enviaPacote(Datagrama datagrama){
+    public void enviaPacote(Datagrama datagrama) throws IOException {
         PrintWriter out = new PrintWriter(this.getHost().getOutputStream(),true);
 		out.println(datagrama.toBinaryString());
 		out.close();
