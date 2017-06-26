@@ -9,7 +9,7 @@ public class RoutingTable {
     private LinkedList<RoutingTableEntry> entradas = new LinkedList<RoutingTableEntry>();
 
     public RoutingTable(LinkedList<String[]> rows){
-        rows.remove(0);
+//        rows.remove(0);
         for(String[] row : rows) {
             this.addEntry(row[0], row[1], Integer.parseInt(row[2]));
         }
@@ -32,8 +32,9 @@ public class RoutingTable {
     }
 
     public int getInterfaceIndex(String ip){
-        int ipAddress = RoutingTableEntry.toBin(ip);
+        int ipAddress = RoutingTableEntry.toBin(ip);        
         for (RoutingTableEntry e : this.entradas) {
+        	e.prefixMatchCount(ip);
             if (e.isGW(ipAddress)) {
                 return e.getInterfaceIndex();
             }
