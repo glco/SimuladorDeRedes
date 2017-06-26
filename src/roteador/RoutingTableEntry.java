@@ -32,7 +32,7 @@ public class RoutingTableEntry {
     }
 
     public boolean isGW(int ip){
-        return (this.SubnetMask & this.SubnetAddress) == (this.SubnetMask & ip);
+        return (this.SubnetAddress & this.SubnetMask) == (ip & this.SubnetMask);
     }
 
     public static int toBin(String addr){
