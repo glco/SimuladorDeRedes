@@ -3,7 +3,7 @@ import java.io.IOException;
 import console.Console;
 import controlador.Controlador;
 import controlador.ControladorIPV4;
-import roteador.RoteadorIPV4;
+import roteador.Roteador;
 import servidor.Servidor;
 
 public class Main {
@@ -31,7 +31,7 @@ public class Main {
 			String interfacesForNextNodesFile = args[2];
 			String routingTableFile = args[3];
 			c = new ControladorIPV4(
-					new RoteadorIPV4(port, nextNodesAddressesFile, interfacesForNextNodesFile, routingTableFile, c));
+					new Roteador(port, nextNodesAddressesFile, interfacesForNextNodesFile, routingTableFile, c));
 		} catch (NumberFormatException  | IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -39,5 +39,5 @@ public class Main {
 		Console console = new Console(c);
 		//new Thread(s).start();
 	}
-	
+
 }

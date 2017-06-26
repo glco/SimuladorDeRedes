@@ -4,17 +4,25 @@ import java.io.IOException;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import roteador.Roteador;
+import java.io.IOException;
+import java.io.PrintWriter;
 
+import datagrama.DatagramaIpv4;
 import datagrama.Datagrama;
 
-public abstract class InterfaceSimulada  {
+public class InterfaceSimulada {
 	private String ipAddress = null;
+    private String mask = null;
+	private String hostAddress = null;
 	private int port = 0;
 	private Socket host = null;
 	private Roteador roteador = null;
-	public InterfaceSimulada(String ip,int port,Roteador r){
+
+    public InterfaceSimulada(String ip, String mask, String host, int port, Roteador r){
 		this.ipAddress = ip;
 		this.port = port;
+        this.hostAddress = host;
+        this.mask = mask;
 		this.setRoteador(r);
 	}
 
@@ -40,15 +48,28 @@ public abstract class InterfaceSimulada  {
 	}
 
 	public void openConnection() throws UnknownHostException, IOException{
-		host = new Socket(ipAddress,port);
+		this.host = new Socket(this.hostAddress, this.port);
 	}
+
 	public void closeConnection() throws IOException{
 		if(host.isClosed() == false)
 		host.close();
 	}
 
-	public abstract void enviaMensagem(String msg, String dst) throws IOException;
-	public abstract void enviaPacote(Datagrama datagrama) throws IOException;
+	public void enviaMensagem(String msg, String dst) throws IOException {
+        DatagramaIpv4 datagrama = new DatagramaIpv4(msg, dst, this.ipAddress);
+        this.enviaPacote(datagrama);
+    }
+
+	public void enviaPacote(Datagrama datagrama) throws IOException {
+        if (this.host == null) {
+            System.out.println("Sem conexão com vizinho.");
+            return;
+        }
+        PrintWriter out = new PrintWriter(this.host.getOutputStream(),true);
+		out.println(datagrama.toBinaryString());
+		out.close();
+    }
 
 	public Roteador getRoteador() {
 		return roteador;

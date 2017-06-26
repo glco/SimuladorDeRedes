@@ -9,13 +9,13 @@ import controlador.Controlador;
 public class Console implements Runnable{
 	private Controlador controlador;
 	private BufferedReader stdIn;
-	
+
 	public Console(Controlador c){
 		this.controlador = c;
 		this.init();
 	}
-	
-	
+
+
 	private void init(){
 		stdIn = new BufferedReader(new InputStreamReader(System.in));
 		new Thread(this).start();
@@ -28,7 +28,7 @@ public class Console implements Runnable{
 		String comandos  = "Comandos: \n"+
 						   "send <ip do host> <mensagem>  ** Envia <mensagem> para o host especificado.                             ** \n"+
 						   "open <ip> <porta>             ** Tenta abrir uma conexao com o host especificado na porta especificada. ** \n"+
-						   "show                          ** Imprime os hosts disponiveis                                           ** \n"+
+						 //  "show                          ** Imprime os hosts disponiveis                                           ** \n"+
 						   "help                          ** Imprime este menu novamente.                                           ** \n"+
 						   "quit ou exit                  ** terminar a execução do programa.                                       **   ";
 		System.out.println(modoDeUso + comandos);
@@ -78,8 +78,8 @@ public class Console implements Runnable{
 							printUsoIncorreto();
 						else if(args[0].compareTo("open")==0)
 							controlador.abreConexoes();
-						else if(args[0].compareTo("show") == 0)
-							controlador.imprimeInterfaces();
+						//else if(args[0].compareTo("show") == 0)
+							//controlador.imprimeInterfaces();
 					} catch (NumberFormatException e) {
 						e.printStackTrace();
 					} catch (IOException e) {
@@ -88,6 +88,6 @@ public class Console implements Runnable{
 			}
 		}
 	}
-	
-	
+
+
 }

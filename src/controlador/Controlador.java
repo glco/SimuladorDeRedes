@@ -10,12 +10,12 @@ import roteador.Roteador;
 public class Controlador {
 	private Protocolo protocolo;
 	private Roteador roteador;
-	
+
 	protected Controlador(Protocolo p,Roteador r){
 		this.protocolo =p;
 		this.roteador = r;
 	}
-	
+
 	public Protocolo getProtocolo() {
 		return protocolo;
 	}
@@ -31,7 +31,7 @@ public class Controlador {
 	public void setRoteador(Roteador roteador) {
 		this.roteador = roteador;
 	}
-	
+
 	public void enviaMensagem(String msg, String ip) throws IOException{
 		this.roteador.enviaMensagem(msg,ip);
 	}
@@ -41,11 +41,8 @@ public class Controlador {
 	public void shutdown(){
 		this.roteador.shutdown();
 	}
-	public void imprimeInterfaces(){
-		this.roteador.imprimeInterfaces();
-	}
 	public void abreConexoes() throws UnknownHostException, IOException {
 		this.roteador.abreConexoes();
 	}
-	
+
 }

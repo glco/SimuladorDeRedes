@@ -8,42 +8,35 @@ import java.util.LinkedList;
 
 import controlador.Controlador;
 import datagrama.Datagrama;
-import datagrama.DatagramaFactory;
+import datagrama.DatagramaIpv4;
 import fileManager.FileReader;
 import interfaceSimulada.InterfaceSimulada;
+import interfaceSimulada.ConnectionWorker;
 import servidor.Servidor;
 
-public abstract class Roteador {
+public class Roteador {
 	private LinkedList<InterfaceSimulada> interfaces = null;
 	private Servidor servidor = null;
 	private Controlador controlador = null;
 
 	protected RoutingTable tabelaRoteamento = null;
 
-	public Roteador(int porta, String routingTableFile, Controlador c) throws IOException{
+	public Roteador(int porta, String hostFile, String virtualIpFile, String routingTableFile, Controlador c) throws IOException{
 		this.tabelaRoteamento = new RoutingTable(new FileReader().readNetworkFile(routingTableFile));
 		this.servidor = new Servidor(porta,this);
 		this.controlador = c;
-	}
-
-	public abstract void inicializaInterfaces(String host,String virtualIp) throws FileNotFoundException, IOException;
-
-	public LinkedList<InterfaceSimulada> getInterfaces() {
-		return interfaces;
+        this.interfaces = new LinkedList<InterfaceSimulada>();
+        this.inicializaInterfaces(hostFile, virtualIpFile);
 	}
 
     public InterfaceSimulada getInterfaceFor(String ip){
         int i = this.tabelaRoteamento.getInterfaceIndex(ip);
         if (i > -1) {
-            return this.getInterfaces().get(i);
+            return this.interfaces.get(i);
         } else {
             return null;
         }
     }
-
-	public void setInterfaces(LinkedList<InterfaceSimulada> interfaces) {
-		this.interfaces = interfaces;
-	}
 
 	public Servidor getServidor() {
 		return servidor;
@@ -64,21 +57,65 @@ public abstract class Roteador {
 	public void shutdown() {
 
 	}
-	public void imprimeInterfaces(){
-		if(interfaces == null){
-			System.out.println("Nenhum host disponivel no momento");
-			return;
-		}
-		System.out.println("Lista de hosts disponiveis:");
-		for(InterfaceSimulada i : this.interfaces){
-			//System.out.println("-  <"+i.get()+">");
-		}
-	}
 
-	public abstract void enviaMensagem(String msg,String ip) throws IOException;
-	public abstract void receberConexao(Socket client);
-	public abstract void recebePacote(Datagrama data) throws UnsupportedEncodingException;
-	public abstract void enviaPacote(Datagrama data) throws UnsupportedEncodingException;
-	public abstract void abreConexoes() throws UnknownHostException, IOException;
+	public void enviaMensagem(String msg,String ip) throws IOException {
+        InterfaceSimulada i = this.getInterfaceFor(ip);
+        if (i != null) {
+            i.enviaMensagem(msg, ip);
+        } else {
+            System.out.println("Rede inalcansável para o IP " + ip + ".");
+        }
+    }
+
+	public void receberConexao(Socket client){
+        System.out.println("Conexao recebida de <"+client.getInetAddress().getHostAddress()+":"+client.getPort()+">");
+		new Thread(new ConnectionWorker(client, this)).start();
+    }
+
+	public void recebePacote(Datagrama data) throws UnsupportedEncodingException{
+        System.out.println("Pacote Recebido:");
+		System.out.println(data.toString());
+    }
+
+	public void enviaPacote(Datagrama data) throws UnsupportedEncodingException, IOException{
+        DatagramaIpv4 datagrama = (DatagramaIpv4) data;
+        InterfaceSimulada i = this.getInterfaceFor(datagrama.getDestIP());
+        if (i != null) {
+            i.enviaPacote(datagrama);
+        } else {
+            System.out.println("Rede inalcansavel para o IP " + datagrama.getDestIP() + ".");
+        }
+    }
+
+	public void abreConexoes() throws UnknownHostException, IOException{
+        // Abre conexão com todos os sockets, (Cria o socket/interface de saida)
+		if(this.interfaces == null)
+			return;
+		System.out.println("Abrindo conexões");
+		for(InterfaceSimulada i : this.interfaces){
+			i.openConnection();
+		}
+		System.out.println("Conexões abertas com sucesso");
+    }
+
+    public void inicializaInterfaces(String host, String virtualIp) throws IOException {
+		// testar se está funcionando
+		LinkedList<String[]> interfacesEndTemp = new FileReader().readNetworkFile(host);
+		LinkedList<String[]> interfacesVirtualEndTemp = new FileReader().readNetworkFile(virtualIp);
+
+		if(interfacesEndTemp.size() != interfacesVirtualEndTemp.size()){
+			throw new Error("Numero de entradas nos dois arquivos de inicialização são diferentes!");
+		}
+
+		for (int i = 0; i < interfacesEndTemp.size(); i++) {
+            String [] end = interfacesEndTemp.get(i);
+            String [] virtEnd = interfacesVirtualEndTemp.get(i);
+            InterfaceSimulada a = new InterfaceSimulada(virtEnd[0], virtEnd[1], end[0], Integer.parseInt(end[1]), this);
+            // a.openConnection();
+            // new Thread(a).start();
+            this.interfaces.add(a);
+		}
+
+	}
 
 }
